@@ -103,6 +103,12 @@ This project is built based on the following great works:
 - [py-faster-rcnn by Ross Girshick](https://github.com/rbgirshick/py-faster-rcnn)
 - [chenyuntc's pytorch implementation](https://github.com/chenyuntc/simple-faster-rcnn-pytorch)
 
+## 
+
+Please check out the model structure below before digging into details. ;)
+
+Also feel free to pull requests and open an issue if you have any problem!
+
 ## Appendix
 Faster R-CNN Model Structure:
 ![structure](imgs/structure.jpg)
