@@ -39,7 +39,7 @@ In order to be compatible with original setup, this result shown here is initial
    ```
 3. Build CUDA NMS with Cython wrapper. This implementation uses CUDA NMS as default.
    i. Check your [GPU's compute capability](https://developer.nvidia.com/cuda-gpus) and modify `-arch=sm_86` in the `build.bat`.
-   Here uses `sm_86` as an example:
+   Here uses `sm_86` as an example (`-Xptxas="-v"` is optional for showing register and smem usage):
    ```shell
    nvcc -lib -O3 -arch=sm_86 -Xptxas="-v" -o nms_kernel.lib gpu_nms.cu
    ```
