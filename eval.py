@@ -21,7 +21,8 @@ def voc_eval_pre_rec(dataset, model, num_classes):
     # for i, img_input in enumerate(dataset):
     #     tic = time.perf_counter()
     #     model(img_input)
-    #     print(f'{i}, {(time.perf_counter() - tic)*1000:.2f}ms', end='\n')
+    #     print(f'{i}, {(time.perf_counter() - tic)*1000:.2f}ms', end='\r')
+    # print('\n')
     
     # internal timer
     __t = 0. # total time
@@ -39,7 +40,7 @@ def voc_eval_pre_rec(dataset, model, num_classes):
         bboxes, probs, labels = test_nms(cls_prob, bboxes, score_thresh=cfg.eval_score_thresh)
         __t2 = time.perf_counter() - tic
         
-        print(f'Evaluating test sample {i} ... FP: {__t1*1000:.02f} ms,  NMS: {__t2*1000:.02f} ms', end='\r')
+        print(f'Evaluating test sample {i} ... FP: {__t1*1000:.02f} ms,  NMS: {__t2*1000:.02f} ms  ', end='\r')
         __t += (__t1 + __t2)
             
         pred_bboxes.append(bboxes)
@@ -157,7 +158,7 @@ def cal_ap(precision, recall, use_07_metric=False):
     """
     
     num_classes = len(precision)
-    ap = np.zeros((num_classes,), dtype=np.float)
+    ap = np.zeros((num_classes,), dtype=float)
     
     for cls in range(num_classes):
         if precision[cls] is None or recall[cls] is None:

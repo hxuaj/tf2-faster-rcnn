@@ -9,6 +9,7 @@ The purpose and features of this repository:
 - Recurrence of origin paper [\<Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks\>](https://arxiv.org/abs/1506.01497) with superior performance.
 - Concise ,flat and straightforward model architecture with abundant comments.
 - Extend from tf1 to tf2 with Eager implementation and Graph Execution.
+- Faster CUDA Non Maximum Suppression implementation with Cython wrapper.
 - A good start point for further inspection of classic two-stage object detection architecture.
 
 ### Performance
@@ -36,9 +37,23 @@ In order to be compatible with original setup, this result shown here is initial
    conda activate tf2
    conda install numpy opencv cython scipy lxml
    ```
-3. Build the Cython modules (optional)
+3. Build CUDA NMS with Cython wrapper. This implementation uses CUDA NMS as default.
+   i. Check your [GPU's compute capability](https://developer.nvidia.com/cuda-gpus) and modify `-arch=sm_86` in the `build.bat`.
+   Here uses `sm_86` as an example:
    ```shell
-   cd model/utils/nms
+   nvcc -lib -O3 -arch=sm_86 -Xptxas="-v" -o nms_kernel.lib gpu_nms.cu
+   ```
+   ii.Run the following commands: 
+   ```shell
+   cd model/utils/nms/gpu
+   ./build.bat
+   ```
+   Compared with pure Python NMS and Cython implementation, the gpu version is ~15x and ~12x faster in the setting of 6000 bboxes as input. Differ from the original(1-D), this CUDA NMS kernel is implemented by expanding IoU calculation into 2-D and parallelized in each CUDA thread.
+   ![nms](imgs/nms.jpg)
+   
+4. Build the Cython CPU NMS (optional)
+   ```shell
+   cd model/utils/nms/cpu
    python build.py build_ext --inplace
    ```
 

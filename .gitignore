@@ -1,0 +1,10 @@
+*
+!/**/
+!*.*
+*.o
+*.DS_Store
+*.vscode
+!makefile
+!Dockerfile
+__pycache__/
+*.py[cod]

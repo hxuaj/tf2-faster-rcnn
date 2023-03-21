@@ -2,6 +2,7 @@ from config.config import cfg
 import tensorflow as tf
 from tensorflow.keras import layers
 from model.utils.bbox_transform import delta2bbox, clip_to_boundary
+# from model.layer.proposal_layer_py import proposal_nms
 
 
 class proposal_layer(layers.Layer):
@@ -66,11 +67,14 @@ class proposal_layer(layers.Layer):
         # tf.image.non_max_suppression works on tf.float32, returns tf.int32
         # Althought tf.image.non_max_suppression takes bboxes as (y_min, x_min, y_max, x_max),
         # it's the same to input (x_min, y_min, x_max, y_max), since compare IoU.
-        
         proposals_trans = tf.stack([proposals[:, 1], proposals[:, 0], proposals[:, 3], proposals[:, 2]], axis=1)
         indices = tf.image.non_max_suppression(proposals_trans, scores_sorted,
-                                               max_output_size=self.post_nms_top_n,
-                                               iou_threshold=self.nms_thresh)
+                                            max_output_size=self.post_nms_top_n,
+                                            iou_threshold=self.nms_thresh)
+        # indices = tf.py_function(proposal_nms,
+        #                          [proposals, scores_sorted,
+        #                           self.post_nms_top_n, self.nms_thresh],
+        #                          Tout=tf.int32)
         
         # rois: (x_min, y_min, x_max, y_max), shape=(len(indices), 4)
         rois = tf.gather(proposals, indices)

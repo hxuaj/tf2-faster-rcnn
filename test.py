@@ -5,7 +5,8 @@ import os
 from data import pascal
 from model.faster_rcnn import FasterRCNN
 from config.config import cfg
-from model.utils.nms.cpu_nms import cpu_nms
+from model.utils.nms.gpu.gpu_nms import gpu_nms as nms
+# from model.utils.nms.cpu.cpu_nms import cpu_nms as nms
 # Though pure python nms is slightly slower then cython implementation,
 # still ~2 times faster then tf.image.non_max_suppression
 # from model.utils.nms.py_cpu_nms import cpu_nms
@@ -94,7 +95,7 @@ def test_nms(cls_prob, bboxes, score_thresh=cfg.score_threshold):
         # keep = tf.image.non_max_suppression(bbox_trans, prob, max_output_size=cfg.max_output,
         #                                     iou_threshold=cfg.test_nms_thresh,
         #                                     score_threshold=score_thresh).numpy()
-        keep = cpu_nms(bbox.numpy(), prob.numpy(), cfg.max_output, 
+        keep = nms(bbox.numpy(), prob.numpy(), cfg.max_output, 
                           cfg.test_nms_thresh, score_thresh)
         bboxes_out.append(bbox.numpy()[keep])
         prob_out.append(prob.numpy()[keep])
